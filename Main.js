@@ -178,6 +178,7 @@ app.get('/', async(req,res)=>{
   }
 });
           
+          const upload = multer({ storage: storage });
           app.post('/joining', upload.single('signature'), (req, res) => {
             const formData = req.body;
             console.log(formData)
