@@ -305,7 +305,57 @@ app.get('/', async(req,res)=>{
               });
             });
           });
+
+            app.put('/updatejoin/:id',verifyToken, (req, res) => {
+            const id = req.params.id;
+            const {
+              fullName, gender, dob, nationality, maritalStatus,
+              permanentAddress, currentAddress, telephone, email,
+              emergencyName, relationship, emergencyTelephone, emergencyEmail, emergencyAddress,
+              positionTitle, department, supervisor, joiningDate,
+              school1, degree1, graduationYear1, school2, degree2, graduationYear2,
+              bankName, accountNumber, accountHolder, bankBranch,
+              referenceName1, referenceRelationship1, referenceContact1, referenceEmail1,
+              referenceName2, referenceRelationship2, referenceContact2, referenceEmail2,
+              declarationDate, referenceNumber
+            } = req.body;  
           
+            const query = `
+              UPDATE joining
+              SET fullName = ?, gender = ?, dob = ?, nationality = ?, maritalStatus = ?,
+                  permanentAddress = ?, currentAddress = ?, telephone = ?, email = ?,
+                  emergencyName = ?, relationship = ?, emergencyTelephone = ?, emergencyEmail = ?, emergencyAddress = ?,
+                  positionTitle = ?, department = ?, supervisor = ?, joiningDate = ?,
+                  school1 = ?, degree1 = ?, graduationYear1 = ?, school2 = ?, degree2 = ?, graduationYear2 = ?,
+                  bankName = ?, accountNumber = ?, accountHolder = ?, bankBranch = ?,
+                  referenceName1 = ?, referenceRelationship1 = ?, referenceContact1 = ?, referenceEmail1 = ?,
+                  referenceName2 = ?, referenceRelationship2 = ?, referenceContact2 = ?, referenceEmail2 = ?,
+                  declarationDate = ?, referenceNumber = ?
+              WHERE id = ?
+            `;
+          
+            const values = [
+              fullName, gender, dob, nationality, maritalStatus,
+              permanentAddress, currentAddress, telephone, email,
+              emergencyName, relationship, emergencyTelephone, emergencyEmail, emergencyAddress,
+              positionTitle, department, supervisor, joiningDate,
+              school1, degree1, graduationYear1, school2, degree2, graduationYear2,
+              bankName, accountNumber, accountHolder, bankBranch,
+              referenceName1, referenceRelationship1, referenceContact1, referenceEmail1,
+              referenceName2, referenceRelationship2, referenceContact2, referenceEmail2,
+              declarationDate, referenceNumber, id
+            ];
+          
+            pool.query(query, values, (err, result) => {
+              if (err) {
+                console.error('Error updating record:', err);
+                res.status(500).json({ error: 'Failed to update record.' });
+                return;
+              }
+              res.status(200).json({ message: 'Record updated successfully!' });
+            });
+          });
+
 app.post('/login',authenticateUser)
 
 app.get('/fetchoffer',verifyToken,of.fetchoffer)
