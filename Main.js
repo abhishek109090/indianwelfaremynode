@@ -163,21 +163,20 @@ app.get('/', async(req,res)=>{
           const s3 = new AWS.S3();
 
 
-        
-          const storage = multer.diskStorage({
-            destination: function (req, file, cb) {
-              const uploadPath = path.join(__dirname, 'uploads');
-              if (!fs.existsSync(uploadPath)) {
-                fs.mkdirSync(uploadPath);
-              }
-              cb(null, uploadPath);
-            },
-            filename: function (req, file, cb) {
-              cb(null, Date.now() + path.extname(file.originalname));
-            }
-          });
-          
-          const upload = multer({ storage: storage });
+        const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadPath = path.join(__dirname, 'uploads');
+    console.log(`Upload Path: ${uploadPath}`); // Debug log for path
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+      console.log(`Created directory at ${uploadPath}`);
+    }
+    cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
           
           app.post('/joining', upload.single('signature'), (req, res) => {
             const formData = req.body;
