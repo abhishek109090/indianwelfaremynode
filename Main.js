@@ -9,7 +9,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const multerS3 = require('multer-s3')
-
+const upload = multer({ dest: 'uploads/' });
 const of=require('./Offer')
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -163,22 +163,7 @@ app.get('/', async(req,res)=>{
           const s3 = new AWS.S3();
 
 
-        const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, 'uploads');
-    console.log(`Upload Path: ${uploadPath}`); // Debug log for path
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-      console.log(`Created directory at ${uploadPath}`);
-    }
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-          
-          const upload = multer({ storage: storage });
+     
           app.post('/joining', upload.single('signature'), (req, res) => {
             const formData = req.body;
             console.log(formData)
