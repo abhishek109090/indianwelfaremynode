@@ -347,6 +347,7 @@ app.get('/fetchoffer',verifyToken,of.fetchoffer)
 app.get('/check',of.record)
 app.post('/verify',of.verifyuser)
 
+app.put('/updateoffer/:id',verifyToken,of.updateoffer)
 
 app.post('/submit',verifyToken, upload.none(),of.offer)
 
