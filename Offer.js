@@ -38,7 +38,7 @@ const pool = mysql.createPool({
     }
   });
 
-  const insertOfferLetterDataIntoDB = async (offerLetterData) => {
+ const insertOfferLetterDataIntoDB = async (offerLetterData) => {
     return new Promise((resolve, reject) => {
       const query = 'INSERT INTO offer SET ?';
       pool.query(query, offerLetterData, (err, results) => {
@@ -65,31 +65,10 @@ const pool = mysql.createPool({
         country,
         zip,
         location,
-        salary,
-        basicMonthly,
-        hraMonthly,
-        paMonthly,
-        convMonthly,
-        medMonthly,
-        ptaxMonthly,
-        pfMonthly
+        
       } = req.body;
   
-      const numericFields = [
-        'salary',
-        'basicMonthly',
-        'hraMonthly',
-        'paMonthly',
-        'convMonthly',
-        'medMonthly',
-        'ptaxMonthly',
-        'pfMonthly'
-      ];
-  
-      const numericData = {};
-      numericFields.forEach(field => {
-        numericData[field] = parseFloat(req.body[field].replace(/,/g, ''));
-      });
+     
   
       // Generate a random 6-digit number
       const random = Math.floor(100000 + Math.random() * 900000);
@@ -97,7 +76,7 @@ const pool = mysql.createPool({
       // Insert data into the database
       const results = await insertOfferLetterDataIntoDB({
         ...req.body,
-        ...numericData,
+       
         random  // Include the random number
       });
   
@@ -108,8 +87,6 @@ const pool = mysql.createPool({
       res.status(500).send('Internal Server Error');
     }
   };
-  
-  
   const fetchoffer = (request, response) => {
   
     pool.query('SELECT * from offer',  (error, results) => {
@@ -159,9 +136,24 @@ console.log(ref,joiningDate)
         response.status(200).json(results);  
     }); 
   };   
+  const updateoffer = (req, res) => {
+  
+    const id = req.params.id;
+    const updateData = req.body;
+  console.log(req.body)
+    pool.query('UPDATE offer SET ? WHERE id = ?', [updateData, id], (err, result) => {
+      if (err) {
+        console.error('Error updating offer:', err);
+        res.status(500).json({ error: 'Error updating offer' });
+        return;
+      }
+      res.json({ message: 'Offer updated successfully' });
+    });
+  };   
 module.exports={
     offer,
     fetchoffer,
     record,
-    verifyuser
+    verifyuser,
+     updateoffer
 }
