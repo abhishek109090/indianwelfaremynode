@@ -150,10 +150,55 @@ console.log(ref,joiningDate)
       res.json({ message: 'Offer updated successfully' });
     });
   };   
+const verifypass = (req, res) => {
+  
+    const { passcode } = req.body;
+console.log(req.body)
+    // Perform query to verify passcode
+    const query = `SELECT * FROM verify WHERE passcode = ?`;
+    pool.query(query, [passcode], (err, results) => {
+      if (err) {
+        console.error('Error querying MySQL:', err);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+  
+      if (results.length > 0) {
+        res.json({ isValid: true });
+      } else {
+        res.json({ isValid: false });
+      }
+    });
+  };   
+  const updatedel = (req, res) => {
+  
+    const offerId = req.params.id;
+    const { letterstatus } = req.body;
+  
+    if (letterstatus !== 'inactive') {
+      return res.status(400).json({ error: 'Invalid status value' });
+    }
+  
+    const query = 'UPDATE offer SET letterstatus = ? WHERE id = ?';
+    pool.query(query, [letterstatus, offerId], (err, results) => {
+      if (err) {
+        console.error('Error updating offer status:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+  
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'Record not found' });
+      }
+  
+      res.json({ message: 'Record updated successfully' });
+    });
+  };   
 module.exports={
     offer,
     fetchoffer,
     record,
     verifyuser,
-     updateoffer
+    updateoffer,
+    verifypass,
+    updatedel
 }
