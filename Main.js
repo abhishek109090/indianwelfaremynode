@@ -346,8 +346,11 @@ app.post('/login',authenticateUser)
 app.get('/fetchoffer',verifyToken,of.fetchoffer)
 app.get('/check',of.record)
 app.post('/verify',of.verifyuser)
+app.post('/verifypass',verifyToken,of.verifypass)
 
 app.put('/updateoffer/:id',verifyToken,of.updateoffer)
+app.put('/delete-record/:id',verifyToken,of.updatedel)
+
 
 app.post('/submit',verifyToken, upload.none(),of.offer)
 
