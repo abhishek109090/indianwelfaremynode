@@ -162,7 +162,40 @@ app.get('/', async(req,res)=>{
           
           const s3 = new AWS.S3();
 
-
+ app.get('/products', (req, res) => {
+         
+            const query = 'SELECT * FROM products ';
+          
+            pool.query(query, (err, results) => {
+              if (err) {
+                console.error('Error fetching products:', err);
+                return res.status(500).send('Error fetching products');
+              }
+          
+              const productsWithImageUrls = results.map(product => {
+                // Construct an array of image URLs based on the new column structure
+                const imageUrls = [
+                  product.productImageUrl1,
+                  product.productImageUrl2,
+                  product.productImageUrl3,
+                  product.productImageUrl4,
+                  product.productImageUrl5,
+                  product.productImageUrl6,
+                  product.productImageUrl7,
+                  product.productImageUrl8
+                ];
+          
+                return {
+                  ...product,
+                  productImages: imageUrls // Add the image URLs array to the product data
+                };
+              });
+          
+              console.log(productsWithImageUrls); // Debugging line
+              res.json(productsWithImageUrls);
+            });
+          });
+          
      
           app.post('/joining', upload.single('signature'), (req, res) => {
             const formData = req.body;
