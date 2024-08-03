@@ -10,7 +10,9 @@ const fs = require('fs');
 const path = require('path');
 const multerS3 = require('multer-s3')
 const upload = multer({ dest: 'uploads/' });
+
 const of=require('./Offer')
+const pa=require('./Payslip')
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const pool = mysql.createPool({
@@ -162,41 +164,22 @@ app.get('/', async(req,res)=>{
           
           const s3 = new AWS.S3();
 
- app.get('/products', (req, res) => {
-         
-            const query = 'SELECT * FROM products ';
+
+          // const storage = multer.diskStorage({
+          //   destination: function (req, file, cb) {
+          //     const uploadPath = path.join(__dirname, 'uploads');
+          //     if (!fs.existsSync(uploadPath)) {
+          //       fs.mkdirSync(uploadPath);
+          //     }
+          //     cb(null, uploadPath);
+          //   },
+          //   filename: function (req, file, cb) {
+          //     cb(null, Date.now() + path.extname(file.originalname));
+          //   }
+          // });
           
-            pool.query(query, (err, results) => {
-              if (err) {
-                console.error('Error fetching products:', err);
-                return res.status(500).send('Error fetching products');
-              }
+          // const upload = multer({ storage: storage });
           
-              const productsWithImageUrls = results.map(product => {
-                // Construct an array of image URLs based on the new column structure
-                const imageUrls = [
-                  product.productImageUrl1,
-                  product.productImageUrl2,
-                  product.productImageUrl3,
-                  product.productImageUrl4,
-                  product.productImageUrl5,
-                  product.productImageUrl6,
-                  product.productImageUrl7,
-                  product.productImageUrl8
-                ];
-          
-                return {
-                  ...product,
-                  productImages: imageUrls // Add the image URLs array to the product data
-                };
-              });
-          
-              console.log(productsWithImageUrls); // Debugging line
-              res.json(productsWithImageUrls);
-            });
-          });
-          
-     
           app.post('/joining', upload.single('signature'), (req, res) => {
             const formData = req.body;
             console.log(formData)
@@ -323,8 +306,8 @@ app.get('/', async(req,res)=>{
               });
             });
           });
-
-            app.put('/updatejoin/:id',verifyToken, (req, res) => {
+          
+          app.put('/updatejoin/:id',verifyToken, (req, res) => {
             const id = req.params.id;
             const {
               fullName, gender, dob, nationality, maritalStatus,
@@ -373,16 +356,19 @@ app.get('/', async(req,res)=>{
               res.status(200).json({ message: 'Record updated successfully!' });
             });
           });
-
 app.post('/login',authenticateUser)
 
 app.get('/fetchoffer',verifyToken,of.fetchoffer)
-app.get('/check',of.record)
-app.post('/verify',of.verifyuser)
+app.get('/fetchpay',verifyToken,pa.fetchpayslip)
+
 app.post('/verifypass',verifyToken,of.verifypass)
 
 app.put('/updateoffer/:id',verifyToken,of.updateoffer)
 app.put('/delete-record/:id',verifyToken,of.updatedel)
+
+app.get('/check',of.record)
+app.post('/verify',of.verifyuser)
+app.post('/payslip',verifyToken, upload.none(),pa.payslip)
 
 
 app.post('/submit',verifyToken, upload.none(),of.offer)
