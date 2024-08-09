@@ -533,7 +533,7 @@ app.get('/productsbyid/:id', (req, res) => {
             region: process.env.BUCKET_REGION
           });
           
-          const s3 = new AWS.S3();
+         
           app.post('/product', upload.array('productImages', 8), (req, res) => {
             const {
               productId,
