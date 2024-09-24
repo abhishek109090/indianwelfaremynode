@@ -1,0 +1,13 @@
+*.log
+*.exe
+*.ini
+Documents/
+Downloads/
+Favorites/
+Music/
+OneDrive/
+Pictures/
+Saved Games/
+Searches/
+Videos/
+uploads/
